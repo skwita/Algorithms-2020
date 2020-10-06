@@ -3,6 +3,8 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
+import java.util.Arrays;
+
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
     /**
@@ -82,9 +84,7 @@ public class JavaAlgorithms {
      * Общий комментарий: решение из Википедии для этой задачи принимается,
      * но приветствуется попытка решить её самостоятельно.
      */
-    static public int josephTask(int menNumber, int choiceInterval) {
-        throw new NotImplementedError();
-    }
+    static public int josephTask(int menNumber, int choiceInterval) { throw new NotImplementedError(); }
 
     /**
      * Наибольшая общая подстрока.
@@ -97,9 +97,7 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
-    }
+    static public String longestCommonSubstring(String firs, String second) { throw new NotImplementedError(); }
 
     /**
      * Число простых чисел в интервале
@@ -112,6 +110,27 @@ public class JavaAlgorithms {
      * Единица простым числом не считается.
      */
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        //трудоемкость - O(n log log n) ресурскоемкость - O(n)
+        if (limit <= 1) return 0;
+
+        boolean[] primes;
+        primes = new boolean[limit + 1];
+        Arrays.fill(primes, true);
+        primes[0] = false;
+        primes[1] = false;
+        for (int i = 2; i * i <= limit; i++){
+            if (primes[i]){
+                for(int j = i * i; j <= limit; j += i){
+                    primes[j] = false;
+                }
+            }
+        }
+
+        int count = 0;
+        for (boolean prime: primes){
+            if (prime) count++;
+        }
+
+        return count;
     }
 }

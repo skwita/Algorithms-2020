@@ -2,6 +2,11 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
+import javax.management.StringValueExp;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 @SuppressWarnings("unused")
 public class JavaTasks {
     /**
@@ -98,8 +103,32 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+        // Трудоемкость - O(N), Ресурсоемкость - O(N), где N - кол-во строк в inputName
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        double temp;
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
+            while (true) {
+                String line = reader.readLine();
+                if (line == null) break;
+                temp = Double.parseDouble(line);
+                temp *= 10;
+                arrayList.add((int) temp);
+            }
+        }
+        int[] result = new int[arrayList.size()];
+        for (int i = 0; i < arrayList.size(); i++) {
+            result[i] = arrayList.get(i);
+        }
+        Sorts.quickSort(result);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputName))) {
+            for (int j : result) {
+                temp = j;
+                temp /= 10;
+                writer.write(String.valueOf(temp));
+                writer.newLine();
+            }
+        }
     }
 
     /**
@@ -131,8 +160,50 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortSequence(String inputName, String outputName) throws IOException {
+
+        HashMap<Integer, Integer> dataBase = new HashMap<>();
+        ArrayList<Integer> inp = new ArrayList<>();
+        String temp;
+        int maxCount = 0;
+        int maxNum = 0;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
+            while (true) {
+                temp = reader.readLine();
+                if (temp == null) break;
+                int tempInt = Integer.parseInt(temp);
+                inp.add(tempInt);
+                if (!dataBase.containsKey(tempInt)) {
+                    dataBase.put(tempInt, 1);
+                } else {
+                    dataBase.put(tempInt, dataBase.get(tempInt) + 1);
+                }
+                if (dataBase.get(tempInt) > maxCount) {
+                    maxCount = dataBase.get(tempInt);
+                    maxNum = tempInt;
+                }
+                if (dataBase.get(tempInt) == maxCount){
+                    if (maxNum > tempInt) {
+                        maxNum = tempInt;
+                    }
+                }
+            }
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputName))) {
+            for (Integer integer : inp) {
+                if (integer != maxNum) {
+                    writer.write(integer.toString());
+                    writer.newLine();
+                }
+            }
+            for (int i = 0; i < dataBase.get(maxNum); i++) {
+                writer.write(String.valueOf(maxNum));
+                writer.newLine();
+            }
+        }
+
     }
 
     /**
