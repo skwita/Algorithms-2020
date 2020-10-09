@@ -119,6 +119,36 @@ abstract class AbstractTaskTests : AbstractFileTests() {
             File("temp.txt").delete()
         }
 
+        try {
+            sortTemperatures("input/temp_in2.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                    -98.4
+                    -98.4
+                    -72.0
+                    -50.1
+                    -12.6
+                    -12.6
+                    -5.9
+                    -2.5
+                    5.0
+                    6.8
+                    11.0
+                    24.7
+                    35.0
+                    36.1
+                    36.6
+                    50.5
+                    75.0
+                    99.5
+                    121.3
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+
         fun testGeneratedTemperatures(size: Int): PerfResult<Unit> {
             try {
                 val res = generateTemperatures(size)
@@ -272,6 +302,34 @@ abstract class AbstractTaskTests : AbstractFileTests() {
                         41
                         32
                         32
+                    """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+
+        try {
+            sortSequence("input/seq_in6.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                        13
+                        14
+                        15
+                        16
+                        1
+                        71
+                        81
+                        99
+                        227
+                        12
+                        12
+                        12
+                        12
+                        12
+                        12
+                        12
+                        12
                     """.trimIndent()
             )
         } finally {
