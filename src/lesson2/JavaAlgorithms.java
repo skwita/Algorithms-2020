@@ -97,7 +97,40 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    static public String longestCommonSubstring(String firs, String second) { throw new NotImplementedError(); }
+    static public String longestCommonSubstring(String first, String second) {
+        //трудоемкость и ресурсоемкость - O(KN) (K - длина первой строки, N - длина второй)
+        int[][] substrings = new int[first.length()][second.length()];
+        int maxLength = 0;
+        StringBuilder substring = new StringBuilder();
+
+        for (int i = 0; i < first.length(); i++){
+            for (int j = 0; j < second.length(); j++){
+                boolean isEquals = first.charAt(i) == second.charAt(j);
+                if ((i == 0 || j == 0) && isEquals){
+                    substrings[i][j] = 1;
+                    break;
+                }
+                if (isEquals) {
+                    substrings[i][j] = substrings[i - 1][j - 1] + 1;
+                }
+                if (substrings[i][j] >= maxLength) maxLength = substrings[i][j];
+            }
+        }
+
+        for (int i = 0; i < first.length(); i++){
+            for (int j = 0; j < second.length(); j++){
+                if (substrings[i][j] == maxLength) {
+                    int counter = maxLength - 1;
+                    while (counter >= 0) {
+                        substring.append(first.charAt(i - counter));
+                        counter--;
+                    }
+                    return substring.toString();
+                }
+            }
+        }
+        return "";
+    }
 
     /**
      * Число простых чисел в интервале

@@ -104,7 +104,7 @@ public class JavaTasks {
      * 121.3
      */
     static public void sortTemperatures(String inputName, String outputName) throws IOException {
-        // Трудоемкость - O(N), Ресурсоемкость - O(N), где N - кол-во строк в inputName
+        // Трудоемкость - O(N log N), Ресурсоемкость - O(N), где N - кол-во строк в inputName
         ArrayList<Integer> arrayList = new ArrayList<>();
         double temp;
         try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
@@ -161,7 +161,7 @@ public class JavaTasks {
      * 2
      */
     static public void sortSequence(String inputName, String outputName) throws IOException {
-
+        //трудоемкость - O(N), ресурсоемкость - O(N), где N - кол-во строк в inputName
         HashMap<Integer, Integer> dataBase = new HashMap<>();
         ArrayList<Integer> inp = new ArrayList<>();
         String temp;
