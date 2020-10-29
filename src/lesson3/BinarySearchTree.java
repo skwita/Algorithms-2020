@@ -13,6 +13,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         Node<T> left = null;
         Node<T> right = null;
 
+
         Node(T value) {
             this.value = value;
         }
@@ -99,10 +100,52 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      *
      * Средняя
      */
+
+    // ресурсоемкость - O(1) = const
+    // трудоемкость: в худшем случае - O(N), в лучшем - O(logN), N - высота дерева
+
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        if (!contains(o) || root == null) return false; // doesn't contain or root is null
+        T t = (T) o;
+        root = remove(root, t);
+        size--;
+        return true;
+    }
+
+    private Node<T> remove (Node<T> node, T value){
+        int comparison = value.compareTo(node.value);
+
+        if (comparison > 0) {
+            node.right = remove(node.right, value);
+            return node;
+        }
+        if (comparison < 0) {
+            node.left = remove(node.left, value);
+            return node;
+        }
+
+        if (node.right == null && node.left == null) return null; // Нет детей
+
+        if (node.left == null) return node.right; // Только потомок справа
+        if (node.right == null) return node.left; // Только потомок слева
+
+        // Если оба потомка -> узел заменяется на минимальный из правого поддерево
+        Node<T> temp = node.right;
+        Node<T> min = new Node<>(min(temp).value);
+
+        min.left = node.left;
+        min.right = node.right;
+        node = min;
+        node.right = remove(node.right, node.value);
+
+        return node;
+    }
+
+    private Node<T> min(Node<T> node) { // находит минимум
+        Node<T> temp = node;
+        while (temp.left != null) temp = temp.left;
+        return temp;
     }
 
     @Nullable
@@ -118,9 +161,18 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
     public class BinarySearchTreeIterator implements Iterator<T> {
+        private Stack<Node<T>> NodesStack = new Stack<>();
+        Node<T> currentNode;
 
         private BinarySearchTreeIterator() {
-            // Добавьте сюда инициализацию, если она необходима.
+            addLeftBranch(root);
+        }
+
+        private void addLeftBranch(Node<T> n) { // складывает узлы начиная от корня в левую нижнюю сторону
+            if (n != null) {
+                NodesStack.push(n);
+                addLeftBranch(n.left);
+            }
         }
 
         /**
@@ -133,10 +185,13 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          *
          * Средняя
          */
+
+        //Трудоемкость = O(1) = const
+        //Ресурсоемкость = O(1) = const
+
         @Override
         public boolean hasNext() {
-            // TODO
-            throw new NotImplementedError();
+            return !NodesStack.isEmpty();
         }
 
         /**
@@ -152,10 +207,19 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          *
          * Средняя
          */
+
+        // трудоемкость - O(N), где N - высота дерева
+        // ресурсоемкость - O(1) = const
+
         @Override
         public T next() {
-            // TODO
-            throw new NotImplementedError();
+            if (!hasNext()) throw new NoSuchElementException();
+
+            currentNode = NodesStack.pop();
+            Node<T> workOutNode = currentNode;
+
+            addLeftBranch(workOutNode.right);
+            return workOutNode.value;
         }
 
         /**
@@ -170,10 +234,15 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          *
          * Сложная
          */
+
+        // трудоемкость - O(N) - в худшем случае, O(logN) - в лучшем случае, где N - высота дерева
+        // ресурсоемкость - O(1) = const
+
         @Override
         public void remove() {
-            // TODO
-            throw new NotImplementedError();
+            if (currentNode == null) throw new IllegalStateException();
+            BinarySearchTree.this.remove(currentNode.value);
+            currentNode = null;
         }
     }
 
