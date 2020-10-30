@@ -106,21 +106,27 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
     @Override
     public boolean remove(Object o) {
-        if (!contains(o) || root == null) return false; // doesn't contain or root is null
+        if (root == null) return false; // doesn't contain or root is null
         T t = (T) o;
-        root = remove(root, t);
+        try {
+            root = remove(root, t);
+        } catch (Exception e) {
+            return false;
+        }
         size--;
         return true;
     }
 
-    private Node<T> remove (Node<T> node, T value){
+    private Node<T> remove (Node<T> node, T value) throws Exception {
         int comparison = value.compareTo(node.value);
 
         if (comparison > 0) {
+            if (value.compareTo(node.value) != 0 && node.left == null && node.right == null) throw new Exception();
             node.right = remove(node.right, value);
             return node;
         }
         if (comparison < 0) {
+            if (value.compareTo(node.value) != 0 && node.left == null && node.right == null) throw new Exception();
             node.left = remove(node.left, value);
             return node;
         }
@@ -130,7 +136,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         if (node.left == null) return node.right; // Только потомок справа
         if (node.right == null) return node.left; // Только потомок слева
 
-        // Если оба потомка -> узел заменяется на минимальный из правого поддерево
+        // Если оба потомка -> узел заменяется на минимальный из правого поддерева
         Node<T> temp = node.right;
         Node<T> min = new Node<>(min(temp).value);
 
@@ -161,7 +167,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
     public class BinarySearchTreeIterator implements Iterator<T> {
-        private Stack<Node<T>> NodesStack = new Stack<>();
+        private Stack<Node<T>> nodesStack = new Stack<>();
         Node<T> currentNode;
 
         private BinarySearchTreeIterator() {
@@ -170,7 +176,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
         private void addLeftBranch(Node<T> n) { // складывает узлы начиная от корня в левую нижнюю сторону
             if (n != null) {
-                NodesStack.push(n);
+                nodesStack.push(n);
                 addLeftBranch(n.left);
             }
         }
@@ -191,7 +197,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
         @Override
         public boolean hasNext() {
-            return !NodesStack.isEmpty();
+            return !nodesStack.isEmpty();
         }
 
         /**
@@ -215,7 +221,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         public T next() {
             if (!hasNext()) throw new NoSuchElementException();
 
-            currentNode = NodesStack.pop();
+            currentNode = nodesStack.pop();
             Node<T> workOutNode = currentNode;
 
             addLeftBranch(workOutNode.right);
