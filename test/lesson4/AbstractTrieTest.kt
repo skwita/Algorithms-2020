@@ -170,6 +170,45 @@ abstract class AbstractTrieTest {
             }
             println("All clear!")
         }
+        val controlSet = mutableSetOf<String>()
+        controlSet.add("c")
+        controlSet.add("b")
+        controlSet.add("cat")
+        controlSet.add("car")
+        controlSet.add("bat")
+        controlSet.add("back")
+
+        println("Control set: $controlSet")
+        val trieSet = create()
+        assertFalse(
+            trieSet.iterator().hasNext(),
+            "Iterator of an empty set should not have any next elements."
+        )
+        for (element in controlSet) {
+            trieSet += element
+        }
+        val iterator1 = trieSet.iterator()
+        val iterator2 = trieSet.iterator()
+        println("Checking if calling hasNext() changes the state of the iterator...")
+        while (iterator1.hasNext()) {
+            assertEquals(
+                iterator2.next(), iterator1.next(),
+                "Calling TrieIterator.hasNext() changes the state of the iterator."
+            )
+        }
+        val trieIter = trieSet.iterator()
+        println("Checking if the iterator traverses the entire set...")
+        while (trieIter.hasNext()) {
+            controlSet.remove(trieIter.next())
+        }
+        assertTrue(
+            controlSet.isEmpty(),
+            "TrieIterator doesn't traverse the entire set."
+        )
+        assertFailsWith<IllegalStateException>("Something was supposedly returned after the elements ended") {
+            trieIter.next()
+        }
+        println("All clear!")
     }
 
 }
