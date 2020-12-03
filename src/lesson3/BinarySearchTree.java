@@ -110,27 +110,31 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         T t = (T) o;
         try {
             root = remove(root, t);
-        } catch (Exception e) {
+        } catch (NoSuchElementException e) {
             return false;
         }
         size--;
         return true;
     }
 
-    private Node<T> remove (Node<T> node, T value) throws Exception {
+    private Node<T> remove (Node<T> node, T value) throws NoSuchElementException {
         int comparison = value.compareTo(node.value);
 
         if (comparison > 0) {
-            if (value.compareTo(node.value) != 0 && node.left == null && node.right == null) throw new Exception();
+            if (value.compareTo(node.value) != 0 && node.left == null && node.right == null) throw new NoSuchElementException();
             node.right = remove(node.right, value);
             return node;
         }
         if (comparison < 0) {
-            if (value.compareTo(node.value) != 0 && node.left == null && node.right == null) throw new Exception();
+            if (value.compareTo(node.value) != 0 && node.left == null && node.right == null) throw new NoSuchElementException();
             node.left = remove(node.left, value);
             return node;
         }
+        node = removeNode(node);
+        return node;
+    }
 
+    private Node<T> removeNode (Node<T> node) throws NoSuchElementException {
         if (node.right == null && node.left == null) return null; // Нет детей
 
         if (node.left == null) return node.right; // Только потомок справа

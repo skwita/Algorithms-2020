@@ -2,7 +2,6 @@ package lesson4;
 
 import java.util.*;
 import kotlin.NotImplementedError;
-import lesson3.BinarySearchTree;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,41 +91,8 @@ public class Trie extends AbstractSet<String> implements Set<String> {
      */
     @NotNull
     @Override
-    public Iterator<String> iterator() { return new TrieIterator(); }
-
-    public class TrieIterator implements Iterator<String>{
-        String nextString;
-        private Stack<String> stringsStack = new Stack<>();
-
-        public TrieIterator() {
-            pushStrings(root, "");
-        }
-
-        private void pushStrings (Node node, String string) { // рекурсивный обход в глубину
-            if (node.children == null) return;
-            if (root == null) return;
-            for (Map.Entry<Character, Node> pair : node.children.entrySet()) {
-                if (pair.getKey() == 0) stringsStack.push(string);
-                pushStrings(pair.getValue(), string + pair.getKey());
-            }
-        }
-
-        // Трудоемкость - O(1)
-        // Ресурсоемкость - O(1)
-
-        @Override
-        public boolean hasNext() {
-            return !stringsStack.isEmpty();
-        }
-
-        // Трудоемкость - O(1)
-        // Ресурсоемкость - O(1)
-
-        @Override
-        public String next() {
-            if (!hasNext()) throw new IllegalStateException();
-            nextString = stringsStack.pop();
-            return nextString;
-        }
+    public Iterator<String> iterator() {
+        // TODO
+        throw new NotImplementedError();
     }
 }

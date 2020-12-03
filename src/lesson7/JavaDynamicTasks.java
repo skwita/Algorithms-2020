@@ -2,6 +2,8 @@ package lesson7;
 
 import kotlin.NotImplementedError;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -18,8 +20,38 @@ public class JavaDynamicTasks {
      * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
      * При сравнении подстрок, регистр символов *имеет* значение.
      */
+
+    //Трудоемкость - O(n * m)
+    //Ресурсоемкость - O(n * m)
+    //n - длина строки first, m - строки second
+
     public static String longestCommonSubSequence(String first, String second) {
-        throw new NotImplementedError();
+        int[][] subStrings = new int[first.length() + 1][second.length() + 1];
+
+        for (int i = 0; i < first.length(); i++) {
+            for (int j = 0; j < second.length(); j++) {
+                if (first.charAt(i) == second.charAt(j)) {
+                    subStrings[i + 1][j + 1] = subStrings[i][j] + 1;
+            } else {
+                    subStrings[i + 1][j + 1] = Math.max(subStrings[i + 1][j], subStrings[i][j + 1]);
+                }
+            }
+        }
+
+        StringBuilder LCS = new StringBuilder();
+        int i = first.length();
+        int j = second.length();
+        while ((i > 0) && (j > 0)) {
+            if (first.charAt(i - 1) == second.charAt(j - 1)) {
+                LCS.append(first.charAt(i - 1));
+                i--;
+                j--;
+            } else if (subStrings[i - 1][j] == subStrings[i][j]) {
+                i--;
+            } else j--;
+        }
+        LCS.reverse();
+        return LCS.toString();
     }
 
     /**
