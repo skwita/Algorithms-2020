@@ -127,6 +127,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         }
         if (comparison < 0) {
             if (value.compareTo(node.value) != 0 && node.left == null && node.right == null) throw new NoSuchElementException();
+            assert node.left != null;
             node.left = remove(node.left, value);
             return node;
         }
