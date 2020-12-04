@@ -3,7 +3,9 @@ package lesson7;
 import kotlin.NotImplementedError;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -21,6 +23,7 @@ public class JavaDynamicTasks {
      * При сравнении подстрок, регистр символов *имеет* значение.
      */
 
+    //алгоритм взят с сайта https://neerc.ifmo.ru/wiki/index.php?title=Задача_о_наибольшей_общей_подпоследовательности
     //Трудоемкость - O(n * m)
     //Ресурсоемкость - O(n * m)
     //n - длина строки first, m - строки second
@@ -66,8 +69,45 @@ public class JavaDynamicTasks {
      * то вернуть ту, в которой числа расположены раньше (приоритет имеют первые числа).
      * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
      */
+
+    //Алгоритм взят с сайтa https://neerc.ifmo.ru/wiki/index.php?title=Задача_о_наибольшей_возрастающей_подпоследовательности
+    //Трудоемкость = O(N^2)
+    //Ресурсоемкость = O(N)
     public static List<Integer> longestIncreasingSubSequence(List<Integer> list) {
-        throw new NotImplementedError();
+        if (list.size() <= 1) return list;
+
+        int size = list.size();
+        int[] prev = new int[size];
+        int[] lengths = new int[size];
+
+        for (int i = 0; i < size; i++){
+            lengths[i] = 1;
+            prev[i] = -1;
+            for (int j = 0; j < size; j++){
+                if (list.get(j) < list.get(i) && lengths[j] + 1 > lengths[i]){
+                    lengths[i] = lengths[j] + 1;
+                    prev[i] = j;
+                }
+            }
+        }
+
+        int lastElementIndex = 0;
+        int length = lengths[0];
+        for (int i = 0; i < size; i++){
+            if (lengths[i] > length) {
+                lastElementIndex = i;
+                length = lengths[i];
+            }
+        }
+
+        ArrayList<Integer> answer =  new ArrayList<>();
+        while (lastElementIndex != -1) {
+            answer.add(list.get(lastElementIndex));
+            lastElementIndex = prev[lastElementIndex];
+        }
+
+        Collections.reverse(answer);
+        return answer;
     }
 
     /**
