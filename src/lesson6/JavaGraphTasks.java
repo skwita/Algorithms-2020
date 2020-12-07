@@ -2,8 +2,10 @@ package lesson6;
 
 import kotlin.NotImplementedError;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 @SuppressWarnings("unused")
 public class JavaGraphTasks {
@@ -95,8 +97,32 @@ public class JavaGraphTasks {
      *
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
      */
+
+    //Ресурсоемкость = O(N); Трудоемкость = O(N^2), где N - количество вершин
+
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
-        throw new NotImplementedError();
+        Set<Set<Graph.Vertex>> independentVertexSets = new HashSet<>(); //set для хранения множеств независимых вершин
+        Set<Graph.Vertex> independentVertexes = new HashSet<>(); //set для хранения независимых вершин в текущем цикле
+        Set<Graph.Vertex> usedNeighbour = new HashSet<>(); //set для вершин, соседних с уже добавленными
+        Set<Graph.Vertex> result = new HashSet<>();
+
+        for (Graph.Vertex vertexFirst : graph.getVertices()){
+            for (Graph.Vertex vertexSecond : graph.getVertices()){
+                //добавляет, если вершины соседние, и вторая вершина еще не занята соседними
+                if (!graph.getNeighbors(vertexFirst).contains(vertexSecond) && !usedNeighbour.contains(vertexSecond)) {
+                    independentVertexes.add(vertexSecond); //добавляет вершину в текущую последовательность
+                    usedNeighbour.addAll(graph.getNeighbors(vertexSecond)); //добавляет соседние вершины, как запрещенные
+                }
+            }
+            independentVertexSets.add(independentVertexes);
+        }
+
+        for (Set<Graph.Vertex> set : independentVertexSets) { //поиск наибольшего среди множеств
+            if (set.size() > result.size()){
+                result = set;
+            }
+        }
+        return result;
     }
 
     /**
@@ -120,7 +146,24 @@ public class JavaGraphTasks {
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
     public static Path longestSimplePath(Graph graph) {
-        throw new NotImplementedError();
+        Set<Graph.Vertex> vertices = graph.getVertices();
+        Stack<Path> allPaths = new Stack<>();
+        for (Graph.Vertex vertex: vertices) allPaths.push(new Path(vertex)); //все пути
+
+        Path longestPath = new Path();
+        int maxLength = 0;
+        while(!allPaths.isEmpty()){
+            Path tempPath = allPaths.pop();
+            if (tempPath.getLength() > maxLength){
+                longestPath = tempPath;
+                maxLength = longestPath.getLength();
+            }
+            Set<Graph.Vertex> neighbours = graph.getNeighbors(tempPath.getVertices().get(tempPath.getLength())); //соседи последней вершины
+            for (Graph.Vertex neighbour : neighbours){
+                if(!tempPath.contains(neighbour)) allPaths.push(new Path(tempPath, graph, neighbour));
+            }
+        }
+        return longestPath;
     }
 
 

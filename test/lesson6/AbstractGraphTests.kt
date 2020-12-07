@@ -258,6 +258,72 @@ abstract class AbstractGraphTests {
             setOf(cross["A"], cross["B"], cross["C"], cross["D"]),
             cross.largestIndependentVertexSet()
         )
+
+        val graph2 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(d, e)
+            addConnection(e, a)
+            addConnection(e, b)
+            addConnection(a, d)
+        }.build()
+        assertEquals(
+            setOf(graph["A"], graph["C"]),
+            graph2.largestIndependentVertexSet()
+        )
+
+        val graph3 = GraphBuilder().apply {
+            //      C
+            //    / | \
+            //  B   E--D
+            //  |   |
+            //  A   F
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(c, e)
+            addConnection(e, f)
+        }.build()
+        assertEquals(
+            setOf(graph["A"], graph["C"], graph["F"]),
+            graph3.largestIndependentVertexSet()
+        )
+
+        val graph4 = GraphBuilder().apply {
+            //  A - F
+            //  | \
+            //  E   B
+            //  |   |
+            //  D - C
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(c, e)
+            addConnection(e, a)
+            addConnection(a, f)
+        }.build()
+        assertEquals(
+            setOf(graph["F"], graph["E"], graph["B"]),
+            graph4.largestIndependentVertexSet()
+        )
     }
 
     fun longestSimplePath(longestSimplePath: Graph.() -> Path) {
@@ -351,6 +417,29 @@ abstract class AbstractGraphTests {
         }.build()
         val longestPath3 = graph3.longestSimplePath()
         assertEquals(6, longestPath3.length)
+
+        val graph4 = GraphBuilder().apply {
+            //  A - F
+            //  | \
+            //  E   B
+            //  |   |
+            //  D - C
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, d)
+            addConnection(c, e)
+            addConnection(e, a)
+            addConnection(a, f)
+            addConnection(b, f)
+        }.build()
+        val longestPath4 = graph4.longestSimplePath()
+        assertEquals(5, longestPath4.length)
     }
 
     fun baldaSearcher(baldaSearcher: (String, Set<String>) -> Set<String>) {
