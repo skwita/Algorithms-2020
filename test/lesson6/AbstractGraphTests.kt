@@ -321,7 +321,7 @@ abstract class AbstractGraphTests {
             addConnection(a, f)
         }.build()
         assertEquals(
-            setOf(graph["F"], graph["E"], graph["B"]),
+            setOf(graph["F"], graph["D"], graph["E"], graph["B"]),
             graph4.largestIndependentVertexSet()
         )
     }

@@ -102,11 +102,12 @@ public class JavaGraphTasks {
 
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
         Set<Set<Graph.Vertex>> independentVertexSets = new HashSet<>(); //set для хранения множеств независимых вершин
-        Set<Graph.Vertex> independentVertexes = new HashSet<>(); //set для хранения независимых вершин в текущем цикле
-        Set<Graph.Vertex> usedNeighbour = new HashSet<>(); //set для вершин, соседних с уже добавленными
+
         Set<Graph.Vertex> result = new HashSet<>();
 
         for (Graph.Vertex vertexFirst : graph.getVertices()){
+            Set<Graph.Vertex> independentVertexes = new HashSet<>(); //set для хранения независимых вершин в текущем цикле
+            Set<Graph.Vertex> usedNeighbour = new HashSet<>(); //set для вершин, соседних с уже добавленными
             for (Graph.Vertex vertexSecond : graph.getVertices()){
                 //добавляет, если вершины соседние, и вторая вершина еще не занята соседними
                 if (!graph.getNeighbors(vertexFirst).contains(vertexSecond) && !usedNeighbour.contains(vertexSecond)) {
@@ -145,6 +146,8 @@ public class JavaGraphTasks {
      *
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
+
+    //Трудоемкость = O(V!), Ресурсоемкость = O(V^2), где V - количество вершин
     public static Path longestSimplePath(Graph graph) {
         Set<Graph.Vertex> vertices = graph.getVertices();
         Stack<Path> allPaths = new Stack<>();
