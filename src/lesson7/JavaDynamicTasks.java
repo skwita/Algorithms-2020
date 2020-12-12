@@ -100,7 +100,7 @@ public class JavaDynamicTasks {
             }
         }
 
-        ArrayList<Integer> answer =  new ArrayList<>();
+        List<Integer> answer =  new ArrayList<>();
         while (lastElementIndex != -1) {
             answer.add(list.get(lastElementIndex));
             lastElementIndex = prev[lastElementIndex];

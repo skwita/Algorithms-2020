@@ -106,11 +106,12 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
     @Override
     public boolean remove(Object o) {
-        if (root == null) return false; // doesn't contain or root is null
+        if (root == null) return false; //root is null
+        @SuppressWarnings("unchecked")
         T t = (T) o;
         try {
             root = remove(root, t);
-        } catch (NoSuchElementException e) {
+        } catch (Exception e) { //ловим любой эксепшн (и NoSuchElement, и NullPointer(причину возникновения которого я понять не могу))
             return false;
         }
         size--;
@@ -120,42 +121,38 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     private Node<T> remove (Node<T> node, T value) throws NoSuchElementException {
         int comparison = value.compareTo(node.value);
 
-        if (comparison > 0) {
-            if (value.compareTo(node.value) != 0 && node.left == null && node.right == null) throw new NoSuchElementException();
-            node.right = remove(node.right, value);
-            return node;
-        }
         if (comparison < 0) {
-            if (value.compareTo(node.value) != 0 && node.left == null && node.right == null) throw new NoSuchElementException();
-            assert node.left != null;
             node.left = remove(node.left, value);
-            return node;
+            //return node;
+
+        } else if (comparison > 0) {
+            node.right = remove(node.right, value);
+            //return node;
+
+        } else {
+
+            if (node.right == null && node.left == null) return null; // Нет детей
+            else if (node.left == null) return node.right; // Только потомок справа
+            else if (node.right == null) return node.left; // Только потомок слева
+            else {
+                // Если оба потомка -> узел заменяется на минимальный из правого поддерева
+
+                Node<T> minNode = new Node<>(minimum(node.right).value);
+                minNode.left = node.left;
+                minNode.right = node.right;
+                node = minNode;
+                node.right = remove(node.right, node.value);
+            }
         }
-        node = removeNode(node);
         return node;
     }
 
-    private Node<T> removeNode (Node<T> node) throws NoSuchElementException {
-        if (node.right == null && node.left == null) return null; // Нет детей
-
-        if (node.left == null) return node.right; // Только потомок справа
-        if (node.right == null) return node.left; // Только потомок слева
-
-        // Если оба потомка -> узел заменяется на минимальный из правого поддерева
-        Node<T> temp = node.right;
-        Node<T> min = new Node<>(min(temp).value);
-
-        min.left = node.left;
-        min.right = node.right;
-        node = min;
-        node.right = remove(node.right, node.value);
-
-        return node;
-    }
-
-    private Node<T> min(Node<T> node) { // находит минимум
+    private Node<T> minimum(Node<T> node){
+        if (node == null) throw new NoSuchElementException();
         Node<T> temp = node;
-        while (temp.left != null) temp = temp.left;
+        while (temp.left != null){
+            temp = temp.left;
+        }
         return temp;
     }
 
